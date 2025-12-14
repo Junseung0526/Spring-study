@@ -3,6 +3,9 @@ package com.spring.study.repository;
 import com.spring.study.entity.Article;
 import org.springframework.data.repository.CrudRepository;
 
-public interface ArticleRepository extends CrudRepository<Article, Long> {
+import java.util.ArrayList;
 
+public interface ArticleRepository extends CrudRepository<Article, Long> {
+    @Override
+    ArrayList<Article> findAll();
 }
