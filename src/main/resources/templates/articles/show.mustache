@@ -14,11 +14,12 @@
     {{#article}}
     <tr>
         <th>{{id}}</th>
-        <th>{{title}}</th>
+        <th><a href="/article/{{id}}">{{title}}</a></th>
         <th>{{content}}</th>
     </tr>
     </tbody>
     {{/article}}
 </table>
+<a href="/article/{{id}}/edit" class="btn btn-primary">Edit</a>
 <a href="/articles">Go to Article List</a>
 {{>layouts/footer}}
