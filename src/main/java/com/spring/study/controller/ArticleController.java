@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.ArrayList;
 import java.util.Optional;
@@ -40,7 +41,7 @@ public class ArticleController {
     }
 
     @GetMapping("/article/{id}")
-    public String show (@PathVariable Long id, Model model){
+    public String show(@PathVariable Long id, Model model) {
         log.info("id : " + id);
         // 1. id를 조회해 데이터 가져오기
         Optional<Article> article = articleRepository.findById(id);
@@ -54,7 +55,7 @@ public class ArticleController {
     }
 
     @GetMapping("/articles")
-    public String index(Model model){
+    public String index(Model model) {
         // 1. 모든 데이터 가져오기
         ArrayList<Article> articlesEntityList = articleRepository.findAll();
 
@@ -64,7 +65,7 @@ public class ArticleController {
     }
 
     @GetMapping("/article/{id}/edit")
-    public String edit(@PathVariable Long id,Model model){
+    public String edit(@PathVariable Long id, Model model) {
         // 수정할 데이터 가져오기
         Article articleEntity = articleRepository.findById(id).orElse(null);
 
@@ -76,7 +77,7 @@ public class ArticleController {
     }
 
     @PostMapping("/article/update")
-    public String update(ArticleForm articleForm){
+    public String update(ArticleForm articleForm) {
         log.info(articleForm.toString());
 
         // 1. DTO를 엔티티로 변환하기
@@ -91,5 +92,21 @@ public class ArticleController {
             articleRepository.save(articleEntity);
         }
         return "redirect:/article/" + articleEntity.getId();
+    }
+
+    @GetMapping("/article/{id}/delete")
+    public String delete(@PathVariable Long id, RedirectAttributes rttr) {
+        log.info("삭제 요청 ID: " + id);
+
+        // 1. 삭제할 대상 가져오기
+        Article target = articleRepository.findById(id).orElse(null);
+        log.info(target.toString());
+
+        // 2. 대상 엔티티 삭제하기
+        if (target != null) {
+            articleRepository.delete(target);
+            rttr.addFlashAttribute("msg", id + "번이 삭제되었습니다.");
+        }
+        return "redirect:/articles";
     }
 }
